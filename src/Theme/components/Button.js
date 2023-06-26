@@ -1,4 +1,4 @@
-export default (theme) => ({
+export default theme => ({
   baseStyle: {
     rounded: '3xl',
   },

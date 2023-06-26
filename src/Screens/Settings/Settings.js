@@ -1,11 +1,11 @@
 import React from 'react'
 import { Box, Text, Button, Spacer } from 'native-base'
+
 import ListItem from '../../Components/List/ListItem'
 import ListSection from '../../Components/List/ListSection'
 import Hero from '../../Components/Hero/Hero'
 
-import { useAuth } from '../../Hooks/AuthContext'
-import { useUser } from '../../Hooks/UserContext'
+import { useAuth, useUser } from '../../Hooks'
 
 function Settings({ navigation }) {
   const { currentProperty, properties } = useUser()
@@ -16,9 +16,11 @@ function Settings({ navigation }) {
   }
 
   return (
-    <Box style={{ backgroundColor: 'white', flexGrow: 1 }}>
+    <Box bg={'white'} flexGrow={1}>
       <Hero image>
-        <Text color="white" textAlign="center" size="lg" fontWeight="600" p="4">Settings</Text>
+        <Text color="white" textAlign="center" size="lg" fontWeight="600" p="4">
+          Settings
+        </Text>
       </Hero>
       <ListSection>About</ListSection>
       <ListItem

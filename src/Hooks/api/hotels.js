@@ -1,6 +1,22 @@
 import { MFD_API_HOST } from '@env'
 import { useQuery } from 'react-query'
+
 import { useAPIQueryClient } from '../APIQueryClient'
+import { apiQueryContext } from '../../Services/AxiosService'
+
+export const getHotels = params => {
+  const { get } = apiQueryContext
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await get(`${MFD_API_HOST}/getHotels`, { params })
+      resolve(result?.data)
+    } catch (error) {
+      console.error(error)
+      reject(error)
+    }
+  })
+}
 
 export const useGetHotels = params => {
   const { get } = useAPIQueryClient()
@@ -21,8 +37,8 @@ export const useGetDashboard = date => {
           departures: 0,
           inHouse: 0,
           percentageOccupied: 0,
-        }
-      }
-    }
+        },
+      },
+    },
   )
 }

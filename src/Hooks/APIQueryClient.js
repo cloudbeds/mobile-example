@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useMemo, useReducer } from 'react'
+import React, { createContext, useContext } from 'react'
 import axios from 'axios'
 import { focusManager, QueryClient, QueryClientProvider } from 'react-query'
 
-import { useAuth } from './AuthContext'
+import { useAuth } from '.'
 import { useOnlineManager } from './useOnlineManager'
 import { useAppState } from './useAppState'
 
@@ -28,27 +28,22 @@ const APIQueryClientProvider = ({ children }) => {
   useOnlineManager()
   useAppState(onAppStateChange)
 
-  const auth = (method, includeToken = true, ...args) => {
+  const auth = async (method, includeToken = true, ...args) => {
     // isAuthenticated
-    return getAuthSession().then(tokenData => {
-      let req
-      // is authorized, token may have been refreshed
-      if (method === 'request') {
-        req = axios
-      }
-
-      console.log(args)
-
-      req = axios[method]
-
-      if (includeToken) {
-        axios.defaults.headers.common.Authorization = `Bearer ${tokenData.accessToken}`
-        return req(...args).then(res => res.data)
-      } else {
-        delete axios.defaults.headers.common.Authorization
-        return req(...args).then(res => res.data)
-      }
-    })
+    const tokenData = await getAuthSession()
+    let req
+    // is authorized, token may have been refreshed
+    if (method === 'request') {
+      req = axios
+    }
+    req = axios[method]
+    if (includeToken) {
+      axios.defaults.headers.common.Authorization = `Bearer ${tokenData?.accessToken}`
+      return req(...args).then(res => res.data)
+    } else {
+      delete axios.defaults.headers.common.Authorization
+      return req(...args).then(res_1 => res_1.data)
+    }
   }
 
   const apiQueryContext = {
