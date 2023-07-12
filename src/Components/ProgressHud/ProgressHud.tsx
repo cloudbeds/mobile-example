@@ -11,7 +11,7 @@ interface Props {
 const ProgressHud: React.FC<Props> = ({ message = '', showLoader = true }) => {
   return (
     <Box p={4} style={styles.container}>
-      <BlurView blurType="light" blurAmount={10} style={styles.container} />
+      <BlurView blurType="light" blurAmount={3} style={styles.container} />
 
       {showLoader && (
         <View>

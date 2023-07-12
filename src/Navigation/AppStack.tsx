@@ -1,27 +1,31 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createStackNavigator } from '@react-navigation/stack'
 import SplashScreen from 'react-native-splash-screen'
 import { useTheme } from 'native-base'
 
-import { useUser, useAuth } from '../Hooks'
+import { useUser, useAuth, useLocation } from '../Hooks'
 
 import { isMountedRef, navigationRef } from './navigationUtils'
 import Routes from './routesNames'
 import { renderHeader } from './header'
 import MainStack from './MainStack'
 import Indicator from '../Components/ProgressHud/Indicator'
+import { notificationService } from '../Services/NotificationService'
+import renderModals from './modals'
 
 import Login from '../Screens/Auth/Login'
-import ReservationList from '../Screens/ReservationList/ReservationList'
+import ReservationList from '../Screens/ReservationList'
 import SelectProperty from '../Screens/SelectProperty'
 import AllowPermissions from '../Screens/AllowPermissions'
+import AddNote from '../Screens/AddNote'
 
-const Stack = createNativeStackNavigator()
+const Stack = createStackNavigator()
 
 const AppStack = () => {
-  const { tokenData, getAuthSession, loading, logout } = useAuth()
+  const { tokenData, getAuthSession, loading } = useAuth()
   const { properties, isAllowed, fetchUsers } = useUser()
+  const { getCurrentLocation } = useLocation()
   const { colors } = useTheme()
 
   const accessToken = tokenData?.accessToken
@@ -51,10 +55,23 @@ const AppStack = () => {
       fetchUsers(false)
     }
 
-    // logout()
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken])
+
+  useEffect(() => {
+    if (accessToken && isAllowed) {
+      requestPermissions()
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, isAllowed])
+
+  const requestPermissions = useCallback(async () => {
+    try {
+      await getCurrentLocation()
+      await notificationService.requestNotificationPermission()
+    } catch (error) {}
+  }, [getCurrentLocation])
 
   if (!loading) {
     SplashScreen.hide()
@@ -83,33 +100,38 @@ const AppStack = () => {
             <Stack.Screen
               name={Routes.SelectProperty}
               component={SelectProperty}
-              options={({ route }) => ({
-                title: route?.params?.title || 'Select a Property',
-                headerShown: true,
-              })}
+              options={{ title: 'Select a Property', headerShown: true }}
             />
           ) : permissionAllow ? (
             <Stack.Screen
               name={Routes.AllowPermissions}
               component={AllowPermissions}
-              options={({ route }) => ({
-                title: route?.params?.title || 'Allow App Permissions',
-                headerShown: true,
-              })}
+              options={{ title: 'Allow App Permissions', headerShown: true }}
             />
           ) : (
             <Stack.Group>
-              <Stack.Screen name="Main" component={MainStack} />
+              <Stack.Screen name={Routes.Main} component={MainStack} />
               <Stack.Screen
-                name="ReservationList"
+                name={Routes.ReservationList}
                 component={ReservationList}
                 options={({ route }) => ({
-                  title: route.params.title,
+                  // @ts-ignore
+                  title: route?.params?.title,
                   headerShown: true,
+                  headerTitleAlign: 'left',
+                  headerShadowVisible: true,
+                  headerStyle: { backgroundColor: 'white' },
                 })}
+              />
+              <Stack.Screen
+                name={Routes.AddNote}
+                component={AddNote}
+                options={{ headerShown: false }}
               />
             </Stack.Group>
           )}
+
+          {renderModals(Stack)}
         </Stack.Navigator>
       ) : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>

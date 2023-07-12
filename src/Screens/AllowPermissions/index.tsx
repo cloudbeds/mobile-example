@@ -2,6 +2,7 @@ import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { Box, Button, HStack, Switch, Text, VStack } from 'native-base'
 
+import { notificationService } from '../../Services/NotificationService'
 import { useDimensions, useLocation, useUser } from '../../Hooks'
 import { GenericNavigationProps } from '../../Navigation/types'
 import Layout from '../../Components/Layout'
@@ -33,8 +34,14 @@ const AllowPermissions = ({}) => {
     [getCurrentLocation],
   )
 
-  const changeAllowNotification = useCallback((value: boolean) => {
+  const changeAllowNotification = useCallback(async (value: boolean) => {
     if (value) {
+      try {
+        const allowed =
+          await notificationService.requestNotificationPermission()
+
+        setAllowNotification(!!allowed)
+      } catch (error) {}
     } else {
       setAllowNotification(value)
     }
@@ -64,7 +71,7 @@ const AllowPermissions = ({}) => {
 
             <Switch
               size={'sm'}
-              value={allowLocation}
+              isChecked={allowLocation}
               onValueChange={changeAllowLocation}
             />
           </HStack>
@@ -83,7 +90,7 @@ const AllowPermissions = ({}) => {
 
             <Switch
               size={'sm'}
-              value={allowNotification}
+              isChecked={allowNotification}
               onValueChange={changeAllowNotification}
             />
           </HStack>

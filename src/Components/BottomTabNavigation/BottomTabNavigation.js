@@ -1,38 +1,25 @@
-import { Box, Square, useTheme } from 'native-base';
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
+import { Box, Square, useTheme } from 'native-base'
 
-import AddButton from './AddButton'
-
-const getPaddingBottom = insets => Math.max(insets.bottom + 4, 0)
-
+const getPaddingBottom = insets => Math.max(insets.bottom + 2, 0)
 
 const BottomTabNavigation = ({ state, descriptors, navigation, insets }) => {
   const paddingBottom = getPaddingBottom(insets)
   const { colors } = useTheme()
+
   return (
     <Box
       bg="white"
       pt="2"
       shadow="6"
-      style={{ flexDirection: 'row', paddingBottom, paddingHorizontal: 16 }}>
+      flexDirection={'row'}
+      pb={paddingBottom}
+      py={16}>
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
+        const { options } = descriptors[route.key]
 
-        if (options.addButton) {
-          return (
-            <AddButton
-              key={route.key}
-              state={state}
-              descriptors={descriptors}
-              navigation={navigation}
-              route={route}
-              index={index}
-            />
-          )
-        }
-
-        const isFocused = state.index === index;
+        const isFocused = state.index === index
 
         const onPress = () => {
           const event = navigation.emit({
@@ -43,7 +30,7 @@ const BottomTabNavigation = ({ state, descriptors, navigation, insets }) => {
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate({ name: route.name, merge: true });
+            navigation.navigate({ name: route.name, merge: true })
           }
         }
 
@@ -59,13 +46,13 @@ const BottomTabNavigation = ({ state, descriptors, navigation, insets }) => {
         })
 
         return (
-          <Box key={route.key} style={{ flex: 1, alignItems: 'center' }}>
+          <Box key={route.key} flex={1} alignItems={'center'}>
             <Box
               p="2"
               rounded="lg"
               borderColor={isFocused ? 'primary.500' : 'white'}
               bg={isFocused ? 'primary.50' : null}
-              borderWidth="1" >
+              borderWidth="1">
               <TouchableOpacity
                 accessibilityRole="button"
                 accessibilityState={isFocused ? { selected: true } : {}}
@@ -77,10 +64,10 @@ const BottomTabNavigation = ({ state, descriptors, navigation, insets }) => {
               </TouchableOpacity>
             </Box>
           </Box>
-        );
+        )
       })}
     </Box>
-  );
+  )
 }
 
 export default BottomTabNavigation

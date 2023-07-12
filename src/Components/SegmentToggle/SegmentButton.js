@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Box, Text } from 'native-base'
 
@@ -11,7 +11,7 @@ const SegmentButton = ({ label, onPress, selected }) => {
       <Box
         py="2.5"
         px="8"
-        bg={selected ? 'white' : undefined}
+        bg={selected ? 'white' : 'transparent'}
         shadow={selected ? '3' : undefined}
         borderRadius="3xl"
         alignItems="center"
@@ -27,4 +27,4 @@ const SegmentButton = ({ label, onPress, selected }) => {
   )
 }
 
-export default SegmentButton
+export default memo(SegmentButton)

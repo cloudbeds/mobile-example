@@ -1,17 +1,18 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
+import Routes from './routesNames'
+
 import HousekeepingIcon from '../Components/Icons/Housekeeping'
 import SettingsIcon from '../Components/Icons/Settings'
 import HomeIcon from '../Components/Icons/Home'
 import SearchIcon from '../Components/Icons/Search'
+import BottomTabNavigation from '../Components/BottomTabNavigation/BottomTabNavigation'
 
-import Dashboard from '../Screens/Dashboard/Dashboard'
-import Search from '../Screens/Search/Search'
+import Dashboard from '../Screens/Dashboard'
+import Search from '../Screens/Search'
 import Houskeeping from '../Screens/Housekeeping/Housekeeping'
 import Settings from '../Screens/Settings/Settings'
-import BottomTabNavigation from '../Components/BottomTabNavigation/BottomTabNavigation'
-import AddNote from '../Screens/AddNote/AddNote'
 
 const Tab = createBottomTabNavigator()
 
@@ -21,46 +22,31 @@ const MainStack = () => {
       screenOptions={{ headerShown: false }}
       tabBar={props => <BottomTabNavigation {...props} />}>
       <Tab.Screen
-        name="Home"
+        name={Routes.Home}
         component={Dashboard}
         options={{
-          tabBarIcon: ({ color }) => (
-            <HomeIcon color={color} />
-          )
+          tabBarIcon: ({ color }) => <HomeIcon color={color} />,
         }}
       />
       <Tab.Screen
-        name="Search"
+        name={Routes.Search}
         component={Search}
         options={{
-          tabBarIcon: ({ color }) => (
-            <SearchIcon color={color} />
-          )
+          tabBarIcon: ({ color }) => <SearchIcon color={color} />,
         }}
       />
       <Tab.Screen
-        name="AddNote"
-        component={AddNote}
-        options={{
-          addButton: true,
-        }}
-      />
-      <Tab.Screen
-        name="Housekeeping"
+        name={Routes.Housekeeping}
         component={Houskeeping}
         options={{
-          tabBarIcon: ({ color }) => (
-            <HousekeepingIcon color={color} />
-          )
+          tabBarIcon: ({ color }) => <HousekeepingIcon color={color} />,
         }}
       />
       <Tab.Screen
-        name="Settings"
+        name={Routes.Settings}
         component={Settings}
         options={{
-          tabBarIcon: ({ color }) => (
-            <SettingsIcon color={color} />
-          )
+          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
         }}
       />
     </Tab.Navigator>

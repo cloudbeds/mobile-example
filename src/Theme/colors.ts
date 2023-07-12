@@ -1,3 +1,5 @@
+import { ITheme } from 'native-base'
+
 const colors = {
   contrastThreshold: 7,
   // Singleton colors
@@ -90,4 +92,4 @@ colors.tertiary = colors.mint
 colors.info = colors.fog
 colors.light = colors.fog
 
-export default colors
+export default colors as unknown as ITheme['colors']

@@ -22,8 +22,13 @@ export const headerLeft = (
   }
 
   return (
-    <Pressable onPress={backPress}>
-      <FontAwesomeIcon icon={faChevronLeft as Icon} size={18} />
+    <Pressable
+      width={8}
+      height={10}
+      alignItems={'flex-end'}
+      justifyContent={'center'}
+      onPress={backPress}>
+      <FontAwesomeIcon icon={faChevronLeft as Icon} size={16} />
     </Pressable>
   )
 }

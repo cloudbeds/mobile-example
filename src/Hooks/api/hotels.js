@@ -1,7 +1,6 @@
 import { MFD_API_HOST } from '@env'
 import { useQuery } from 'react-query'
 
-import { useAPIQueryClient } from '../APIQueryClient'
 import { apiQueryContext } from '../../Services/AxiosService'
 
 export const getHotels = params => {
@@ -19,14 +18,14 @@ export const getHotels = params => {
 }
 
 export const useGetHotels = params => {
-  const { get } = useAPIQueryClient()
+  const { get } = apiQueryContext
   return useQuery('getHotels', () =>
     get(`${MFD_API_HOST}/getHotels`, { params }),
   )
 }
 
 export const useGetDashboard = date => {
-  const { get } = useAPIQueryClient()
+  const { get } = apiQueryContext
   return useQuery(
     ['getDashboard', date],
     () => get(`${MFD_API_HOST}/getDashboard`, { params: { date } }),
