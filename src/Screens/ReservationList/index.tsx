@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, useTheme, VStack } from 'native-base'
 import { useRoute } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
 
 import {
-  getReservation,
   getReservationNotes,
   useGetReservations,
   useRefreshByUser,
@@ -18,6 +18,7 @@ import {
   RoomProps,
 } from '../../models/reservation'
 import Reservations from '../../Services/Reservations'
+import { RootState } from '../../store/store'
 
 import ReservationRow from './components/ReservationRow'
 import EmptyView from '../../Components/List/EmptyView'
@@ -25,10 +26,15 @@ import ReservationRowSkeleton from './components/ReservationRowSkeleton'
 import Layout from '../../Components/Layout'
 
 function ReservationList() {
+  const { reservations: storedReservations } = useSelector(
+    (state: RootState) => state.reservation,
+  )
   const route = useRoute<RouteProps>()
   const { colors } = useTheme()
 
   const { title, emptyText, fetchParams, type } = route.params
+
+  let pageNumber = useRef(1)
 
   const [loading, setLoading] = useState(false)
   const [detailedReservations, setReservations] = useState<ReservationProps[]>(
@@ -38,9 +44,17 @@ function ReservationList() {
     { [id: string]: ReservationNotesProps[] }[]
   >([])
 
-  const { isLoading, data, refetch } = useGetReservations(title, {
-    ...fetchParams,
-  })
+  const { isLoading, data, refetch } = useGetReservations(
+    title! + pageNumber.current,
+    {
+      ...fetchParams,
+      pageNumber: pageNumber.current,
+      pageSize: 100,
+    },
+    {
+      keepPreviousData: true,
+    },
+  )
   const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetch)
 
   let reservations: ReservationProps[] = useMemo(
@@ -48,7 +62,25 @@ function ReservationList() {
     [data?.data, isLoading],
   )
 
-  useRefreshOnFocus(refetch)
+  const refreshFetch = useCallback(() => {
+    pageNumber.current = 1
+
+    refetchByUser()
+  }, [refetchByUser])
+
+  const refetchs = useCallback(() => {
+    pageNumber.current = 1
+    refetch()
+  }, [refetch])
+
+  const endReached = useCallback(() => {
+    if (reservations?.length) {
+      pageNumber.current = pageNumber.current + 1
+      refetch()
+    }
+  }, [refetch, reservations?.length])
+
+  useRefreshOnFocus(refetchs)
 
   useEffect(() => {
     getReservationInfo()
@@ -60,18 +92,25 @@ function ReservationList() {
   const getReservationInfo = useCallback(async () => {
     setLoading(true)
 
-    const deReservations: ReservationProps[] = await Promise.all(
-      reservations.map(async guest => {
-        return await getReservation({ reservationID: guest.reservationID })
-      }),
-    )
+    const deReservations: ReservationProps[] = reservations?.map(res => {
+      const reservation = storedReservations?.find(
+        s => s?.reservationID === res?.reservationID,
+      )
+
+      return { ...res, ...(reservation || {}) }
+    })
 
     setLoading(false)
-    setReservations(deReservations)
-  }, [reservations])
+    setReservations(
+      Reservations.parseReservations([
+        ...detailedReservations,
+        ...deReservations,
+      ]),
+    )
+  }, [detailedReservations, reservations, storedReservations])
 
   const getReservationNotesInfo = useCallback(async () => {
-    const reservationNotes = await Promise.all(
+    const notes = await Promise.all(
       reservations.map(async guest => {
         return {
           [guest.reservationID]: await getReservationNotes({
@@ -81,8 +120,8 @@ function ReservationList() {
       }),
     )
 
-    setReservationNotes(reservationNotes)
-  }, [reservations])
+    setReservationNotes([...notes, ...reservationNotes])
+  }, [reservationNotes, reservations])
 
   const filteredReservationNote = useCallback(
     (reservationID: string) => {
@@ -115,15 +154,16 @@ function ReservationList() {
   )
 
   const renderItem = useCallback(
-    ({ item }: { item: ReservationProps }) => (
+    ({ item }: { item: any }) => (
       <ReservationRow
         reservation={item}
+        reservations={detailedReservations}
         reservationNotes={filteredReservationNote(item?.reservationID)}
-        onUpdate={refetch}
+        onUpdate={refetchs}
         type={type!}
       />
     ),
-    [filteredReservationNote, refetch, type],
+    [detailedReservations, filteredReservationNote, refetchs, type],
   )
 
   const renderListEmptyComponent = useCallback(
@@ -145,12 +185,13 @@ function ReservationList() {
       <FlatList
         height={'100%'}
         bg={'white'}
-        data={Reservations.parseReservations(detailedReservations)}
+        data={detailedReservations}
         keyExtractor={keyExtractor}
-        onRefresh={refetchByUser}
+        onRefresh={refreshFetch}
         refreshing={isRefetchingByUser}
         renderItem={renderItem}
         ListEmptyComponent={renderListEmptyComponent}
+        onEndReached={endReached}
       />
     </Layout>
   )

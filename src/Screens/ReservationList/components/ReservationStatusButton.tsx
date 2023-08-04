@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Button, Spinner, useDisclose } from 'native-base'
+import { Button, useDisclose } from 'native-base'
 import _ from 'lodash'
 
 import Reservations from '../../../Services/Reservations'
@@ -25,6 +25,7 @@ import { ToastTypes } from '../../../Hooks/useToast'
 
 import ReservationRoomsList from './ReservationRoomsList'
 import AssignRooms from './AssignRooms'
+import Spinner from '../../../Components/Spinner'
 
 interface Props {
   reservation: ReservationProps & GuestProps & RoomProps
@@ -338,7 +339,7 @@ const ReservationStatus = ({ reservation, onUpdate, type }: Props) => {
         variant={buttonVariant}
         onPress={() => handlePress(false)}
         minWidth="32">
-        {isLoading ? <Spinner color={spinnerColor} /> : label}
+        {isLoading ? <Spinner size={22} color={spinnerColor} /> : label}
       </Button>
 
       <ReservationRoomsList

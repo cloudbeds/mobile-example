@@ -49,14 +49,14 @@ export const headerTitle = (title?: any) => {
 
 export const renderHeader = ({
   navigation,
-  colors,
+  color,
 }: any): StackNavigationOptions => ({
   animationTypeForReplace: 'pop',
   gestureEnabled: false,
   animationEnabled: true,
   headerShown: false,
   headerStyle: {
-    backgroundColor: colors.primary['100'],
+    backgroundColor: color,
     shadowRadius: 0,
     elevation: 0,
     shadowOffset: {

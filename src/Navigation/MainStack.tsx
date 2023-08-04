@@ -11,8 +11,8 @@ import BottomTabNavigation from '../Components/BottomTabNavigation/BottomTabNavi
 
 import Dashboard from '../Screens/Dashboard'
 import Search from '../Screens/Search'
-import Houskeeping from '../Screens/Housekeeping/Housekeeping'
-import Settings from '../Screens/Settings/Settings'
+import Houskeeping from '../Screens/Housekeeping'
+import Settings from '../Screens/Settings'
 
 const Tab = createBottomTabNavigator()
 

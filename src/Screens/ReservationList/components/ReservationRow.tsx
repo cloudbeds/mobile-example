@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, HStack, Text, VStack, useTheme, IconButton } from 'native-base'
 
 import {
@@ -6,6 +6,7 @@ import {
   ReservationNotesProps,
   ReservationProps,
 } from '../../../models/reservation'
+import { GuestProps } from '../../../models/guest'
 import Reservations from '../../../Services/Reservations'
 import { navigate } from '../../../Navigation/navigationUtils'
 import Routes from '../../../Navigation/routesNames'
@@ -15,9 +16,11 @@ import ReservationStatusButton from './ReservationStatusButton'
 import NoteIcon from '../../../Components/Icons/Note'
 import StyledBadge from '../../../Components/StyledBadge'
 import CreditCardIcon from '../../../Components/Icons/CreditCard'
+import Spinner from '../../../Components/Spinner'
 
 interface Props {
-  reservation: ReservationProps
+  reservation: ReservationProps & GuestProps
+  reservations: ReservationProps[]
   reservationNotes: ReservationNotesProps[]
   onUpdate: () => void
   type: DashboardTypes
@@ -25,17 +28,30 @@ interface Props {
 
 const ReservationRow = ({
   reservation,
+  reservations,
   reservationNotes,
   onUpdate,
   type,
 }: Props) => {
   const { colors } = useTheme()
 
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 1)
+  }, [])
+
   const roomName = Reservations.getRoomNames(reservation)
 
   const openAddNote = useCallback(() => {
     navigate(Routes.AddNote, { reservation })
   }, [reservation])
+
+  const openPayment = useCallback(() => {
+    navigate(Routes.TakePayment, { reservation, reservations })
+  }, [reservation, reservations])
 
   return (
     <Box p="4" bg="white" borderBottomWidth="1" borderBottomColor="light.300">
@@ -62,11 +78,16 @@ const ReservationRow = ({
         </VStack>
       </HStack>
       <HStack>
-        <ReservationStatusButton
-          reservation={reservation}
-          onUpdate={onUpdate}
-          type={type}
-        />
+        {loading ? (
+          <Spinner size={24} color={colors.primary['500']} />
+        ) : (
+          <ReservationStatusButton
+            reservation={reservation}
+            onUpdate={onUpdate}
+            type={type}
+          />
+        )}
+
         <Box flex={1}>
           <HStack alignItems="center" justifyContent="flex-end">
             <Box>
@@ -83,6 +104,7 @@ const ReservationRow = ({
                 <IconButton
                   p="3.5"
                   icon={<CreditCardIcon color={colors.darkText} />}
+                  onPress={openPayment}
                 />
                 <StyledBadge dotColor={'error.500'} />
               </Box>

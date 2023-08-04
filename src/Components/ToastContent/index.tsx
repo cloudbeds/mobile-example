@@ -91,7 +91,10 @@ const ToastContent: React.FC<Props> = ({
 
           <VStack ml={2} maxW={showClose ? '90%' : '92%'}>
             {title ? (
-              <Text fontWeight={'700'} color={textColor} mb={1}>
+              <Text
+                fontWeight={'700'}
+                color={textColor}
+                mb={description ? 1 : 0}>
                 {title}
               </Text>
             ) : null}

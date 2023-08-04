@@ -12,6 +12,15 @@ export const useGetRooms = (key, params, options) => {
   )
 }
 
+export const useGetRoomTypes = (key, params, options) => {
+  const { get } = apiQueryContext
+  return useQuery(
+    ['getRoomTypes', key],
+    () => get(`${MFD_API_HOST}/getRoomTypes`, { params }),
+    options,
+  )
+}
+
 export const useGetRoomsUnassigned = (key, params, options) => {
   const { get } = apiQueryContext
   return useQuery(

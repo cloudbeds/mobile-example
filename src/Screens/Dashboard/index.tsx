@@ -10,7 +10,7 @@ import {
   RouteParamsInterface,
 } from '../../Navigation/types'
 import Routes from '../../Navigation/routesNames'
-import { useDimensions } from '../../Hooks'
+import { useDimensions, useRefresh } from '../../Hooks'
 import {
   useGetDashboard,
   useRefreshByUser,
@@ -27,6 +27,7 @@ import SegmentToggle from '../../Components/SegmentToggle/SegmentToggle'
 function Dashboard() {
   const navigation = useNavigation<GenericNavigationProps>()
   const { height, safeArea, headerHeight } = useDimensions()
+  const { refetchAllReservations } = useRefresh(true)
 
   const [segment, setSegment] = useState('Today')
   const [filterDate, setFilterDate] = useState(moment().format('YYYY-MM-DD'))
@@ -37,6 +38,11 @@ function Dashboard() {
   const { arrivals, departures, inHouse, percentageOccupied } = response
 
   useRefreshOnFocus(refetch)
+
+  const refetchAll = useCallback(() => {
+    refetchAllReservations()
+    refetchByUser()
+  }, [refetchByUser, refetchAllReservations])
 
   let dateOptions: Intl.DateTimeFormatOptions = {
     weekday: 'long',
@@ -111,7 +117,7 @@ function Dashboard() {
           refreshControl={
             <RefreshControl
               refreshing={isRefetchingByUser}
-              onRefresh={refetchByUser}
+              onRefresh={refetchAll}
               colors={[ios ? 'white' : colors.primary['500']]}
               tintColor={ios ? 'white' : colors.primary['500']}
             />
@@ -178,8 +184,6 @@ function Dashboard() {
                   Arrivals
                 </Text>
               }
-              rightContent={undefined}
-              route={undefined}
             />
 
             <ListItem
@@ -194,8 +198,6 @@ function Dashboard() {
                   Departures
                 </Text>
               }
-              rightContent={undefined}
-              route={undefined}
             />
 
             <ListItem
@@ -210,8 +212,6 @@ function Dashboard() {
                   In-House
                 </Text>
               }
-              rightContent={undefined}
-              route={undefined}
             />
           </VStack>
         </ScrollView>

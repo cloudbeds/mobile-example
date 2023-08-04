@@ -10,6 +10,10 @@ export enum Routes {
   Settings = 'Settings',
   ReservationList = 'ReservationList',
   ConfirmDialog = 'ConfirmDialog',
+  Rooms = 'Rooms',
+  Properties = 'Properties',
+  ReportIssue = 'ReportIssue',
+  TakePayment = 'TakePayment',
 }
 
 export default Routes

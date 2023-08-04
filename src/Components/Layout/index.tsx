@@ -19,7 +19,7 @@ const Layout = ({
   const isDarkMode = useColorScheme() === 'dark'
 
   const backgroundStyle = {
-    backgroundColor: colors.primary['100'],
+    backgroundColor: bg || colors.primary['100'],
   }
 
   bg = bg || colors.primary['100']

@@ -9,6 +9,8 @@ import {
   useTheme,
   Text,
 } from 'native-base'
+import { useSelector } from 'react-redux'
+import moment from 'moment-timezone'
 import { useIsFocused } from '@react-navigation/native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faQuestion, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -16,7 +18,6 @@ import { Icon } from '@fortawesome/fontawesome-svg-core'
 
 import {
   getGuestNotes,
-  getReservation,
   getReservationNotes,
   useGetGuestsByFilter,
   useRefreshByUser,
@@ -34,13 +35,20 @@ import {
   getFilteredGuestsGroupBy,
 } from '../../models/guest'
 import { ios } from '../../Theme/devices'
+import images from '../../Theme/images'
 import Reservations from '../../Services/Reservations'
+import { RootState } from '../../store/store'
 
 import Hero from '../../Components/Hero/Hero'
 import Spinner from '../../Components/Spinner'
 import SearchItem from './components/SearchItem'
+import ListSection from '../../Components/List/ListSection'
 
 function Search() {
+  const { reservations: storedReservations } = useSelector(
+    (state: RootState) => state.reservation,
+  )
+
   const { colors } = useTheme()
   const { height, safeArea, headerHeight } = useDimensions()
   const isFocused = useIsFocused()
@@ -57,11 +65,20 @@ function Search() {
 
   const guestSearch = Number.isInteger(Number(searchTerm))
 
-  const { isLoading, data, refetch } = useGetGuestsByFilter('search', {
-    guestName: guestSearch ? '' : searchTerm,
-    reservationID: guestSearch ? searchTerm : '',
-    status: RoomStatusTypes.in_house,
-  })
+  const checkOutFrom = moment().add(-30, 'days').format('YYYY-MM-DD')
+  const checkInTo = moment().add(30, 'days').format('YYYY-MM-DD')
+
+  const { isLoading, data, refetch } = useGetGuestsByFilter(
+    'search',
+    {
+      guestName: guestSearch ? '' : searchTerm,
+      reservationID: guestSearch ? searchTerm : '',
+      checkOutFrom,
+      checkInTo,
+      status: RoomStatusTypes.in_house,
+    },
+    { enabled: true },
+  )
   const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetch)
 
   const filteredGuests = useMemo(
@@ -99,15 +116,17 @@ function Search() {
       setLoading(true)
     }
 
-    const res: ReservationProps[] = await Promise.all(
-      filteredGuests.map(async guest => {
-        return await getReservation({ reservationID: guest.reservationID })
-      }),
-    )
+    const res: ReservationProps[] = filteredGuests?.map(res => {
+      const reservation = storedReservations?.find(
+        s => s?.reservationID === res?.reservationID,
+      )
+
+      return { ...res, ...(reservation || {}) }
+    })
 
     setLoading(false)
     setReservations(res)
-  }, [filteredGuests, reservations?.length])
+  }, [filteredGuests, reservations?.length, storedReservations])
 
   const getReservationNotesInfo = useCallback(async () => {
     const reservationNotes = await Promise.all(
@@ -174,6 +193,7 @@ function Search() {
     ({ item }: { item: GuestProps & ReservationProps }) => (
       <SearchItem
         reservation={item}
+        reservations={reservations}
         reservationNotes={
           item?.isGuest
             ? filteredGuestNote(item?.guestID?.toString()!)
@@ -181,18 +201,12 @@ function Search() {
         }
       />
     ),
-    [filteredGuestNote, filteredReservationNote],
+    [filteredGuestNote, filteredReservationNote, reservations],
   )
 
   const renderSectionHeader = useCallback(
     ({ section: { title } }: { section: { title: string } }) =>
-      title ? (
-        <Box bg={'fog.600'} py={2} px={4}>
-          <Text fontWeight={'600'} color="white">
-            {title}
-          </Text>
-        </Box>
-      ) : null,
+      title ? <ListSection>{title}</ListSection> : null,
     [],
   )
 
@@ -274,7 +288,7 @@ function Search() {
 
   return (
     <Box flex={1} bg="white">
-      <Hero image>
+      <Hero image source={images.SearchBg} height={180}>
         <Box p={4} mt={12}>
           <Input
             bg={'white'}

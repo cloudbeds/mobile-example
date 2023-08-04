@@ -1,21 +1,23 @@
 import React, { ReactNode } from 'react'
 import { StatusBar, StyleSheet, useColorScheme } from 'react-native'
 import { Box, Image } from 'native-base'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ios } from '../../Theme/devices'
+import images from '../../Theme/images'
 
 export interface Props {
   children: ReactNode
   image?: boolean
+  source?: any
+  height?: number
+  mask?: boolean
 }
 
-const Hero = ({ children, image }: Props) => {
-  const insets = useSafeAreaInsets()
+const Hero = ({ children, image, source, height, mask }: Props) => {
   const isDarkMode = useColorScheme() === 'dark'
 
   return (
-    <Box bg={'white'} position={'relative'} pt={insets.top}>
+    <Box bg={'white'} position={'relative'} safeAreaTop>
       <StatusBar
         barStyle={ios || isDarkMode ? 'light-content' : 'dark-content'}
       />
@@ -23,11 +25,19 @@ const Hero = ({ children, image }: Props) => {
       {image ? (
         <Box style={{ ...StyleSheet.absoluteFillObject }}>
           <Image
-            source={require('../../Assets/hero-background.png')}
+            source={source || images.Hero}
             alt="Alternate Text"
             width="100%"
-            height={320}
+            height={height || 320}
           />
+
+          {mask && (
+            <Box
+              style={{ ...StyleSheet.absoluteFillObject }}
+              bg="black"
+              opacity={0.6}
+            />
+          )}
         </Box>
       ) : null}
 

@@ -19,12 +19,15 @@ import ReservationList from '../Screens/ReservationList'
 import SelectProperty from '../Screens/SelectProperty'
 import AllowPermissions from '../Screens/AllowPermissions'
 import AddNote from '../Screens/AddNote'
+import Rooms from '../Screens/Housekeeping/Rooms'
+import ReportIssue from '../Screens/Settings/ReportIssue'
+import TakePayment from '../Screens/TakePayment'
 
 const Stack = createStackNavigator()
 
 const AppStack = () => {
   const { tokenData, getAuthSession, loading } = useAuth()
-  const { properties, isAllowed, fetchUsers } = useUser()
+  const { properties, isAllowed, fetchUsers } = useUser(true)
   const { getCurrentLocation } = useLocation()
   const { colors } = useTheme()
 
@@ -73,17 +76,18 @@ const AppStack = () => {
     } catch (error) {}
   }, [getCurrentLocation])
 
-  if (!loading) {
-    SplashScreen.hide()
-  } else {
-    return null
-  }
-
   const isLoggedIn = !!accessToken
   const allowProperty = !isAllowed && properties?.length > 1
   const permissionAllow = !isAllowed && properties?.length === 1
 
-  if (isLoggedIn && !isAllowed && !allowProperty && !permissionAllow) {
+  const isLoading =
+    isLoggedIn && !isAllowed && !allowProperty && !permissionAllow
+
+  if (!loading) {
+    SplashScreen.hide()
+  }
+
+  if (isLoading) {
     return <Indicator />
   }
 
@@ -93,7 +97,7 @@ const AppStack = () => {
         <Stack.Navigator
           screenOptions={({ navigation }) => {
             return {
-              ...renderHeader({ navigation, colors }),
+              ...renderHeader({ navigation, color: colors.primary['100'] }),
             }
           }}>
           {allowProperty ? (
@@ -126,6 +130,30 @@ const AppStack = () => {
               <Stack.Screen
                 name={Routes.AddNote}
                 component={AddNote}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name={Routes.Rooms}
+                component={Rooms}
+                options={{
+                  title: 'Rooms',
+                  headerShown: true,
+                  headerStyle: { backgroundColor: colors.info['400'] },
+                }}
+              />
+              <Stack.Screen
+                name={Routes.Properties}
+                component={SelectProperty}
+                options={{ title: 'Select a Property', headerShown: true }}
+              />
+              <Stack.Screen
+                name={Routes.ReportIssue}
+                component={ReportIssue}
+                options={{ title: '', headerShown: true }}
+              />
+              <Stack.Screen
+                name={Routes.TakePayment}
+                component={TakePayment}
                 options={{ headerShown: false }}
               />
             </Stack.Group>

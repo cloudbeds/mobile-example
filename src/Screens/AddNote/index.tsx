@@ -38,6 +38,7 @@ import { GuestNotesProps } from '../../models/guest'
 import { RouteProps } from '../../Navigation/types'
 import { delay } from '../../Services/GlobalService'
 import { ToastTypes } from '../../Hooks/useToast'
+import { ios } from '../../Theme/devices'
 
 import Layout from '../../Components/Layout'
 import NoteItem from './components/NoteItem'
@@ -348,7 +349,8 @@ function AddNote() {
   ])
 
   const keyExtractor = useCallback(
-    (item: any, index: number) => `${item.subReservationID}-${index}`,
+    (item: ReservationNotesProps, index: number) =>
+      `${item.reservationNoteID}-${index}`,
     [],
   )
 
@@ -379,7 +381,9 @@ function AddNote() {
         {renderHeader()}
       </Box>
 
-      <Box bg={'white'} height={height - safeArea.bottom - safeArea.top - 160}>
+      <Box
+        bg={'white'}
+        height={height - safeArea.bottom - safeArea.top - (ios ? 160 : 172)}>
         <FlatList
           p={4}
           showsVerticalScrollIndicator={false}

@@ -1,17 +1,25 @@
 import React from 'react'
+import { TouchableOpacity } from 'react-native'
 import { Box, HStack, Spacer, useTheme } from 'native-base'
+import { IHStackProps } from 'native-base/lib/typescript/components/primitives/Stack/HStack'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight'
-import { TouchableOpacity } from 'react-native'
+import { Icon } from '@fortawesome/fontawesome-svg-core'
+
+interface Props extends IHStackProps {
+  leftContent?: any
+  bodyContent?: any
+  rightContent?: any
+  onPress?: (() => void) | null | undefined
+}
 
 const ListItem = ({
   leftContent,
   bodyContent,
   rightContent,
-  route,
   onPress,
   ...rest
-}) => {
+}: Props) => {
   const { colors } = useTheme()
 
   const handlePress = () => {
@@ -45,8 +53,9 @@ const ListItem = ({
         {onPress ? (
           <Box justifyContent="center" ml="2">
             <FontAwesomeIcon
-              icon={faChevronRight}
-              color={colors.primary['500']}
+              icon={faChevronRight as Icon}
+              color={colors.darkText}
+              size={12}
             />
           </Box>
         ) : null}

@@ -6,7 +6,9 @@ const HousekeepingIcon = props => (
   <View
     style={[
       StyleSheet.absoluteFill,
+      // eslint-disable-next-line react-native/no-inline-styles
       { alignItems: 'center', justifyContent: 'center' },
+      props.style,
     ]}>
     <Svg width={30} height={30} viewBox="0 0 20 20" fill="none" {...props}>
       <Path

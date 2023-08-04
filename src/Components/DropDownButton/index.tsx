@@ -9,6 +9,7 @@ interface Props extends IPressableProps {
   required?: boolean
   placeholder?: string
   value?: string
+  disabled?: boolean
 }
 
 const DropDownButton: React.FC<Props> = ({
@@ -16,6 +17,7 @@ const DropDownButton: React.FC<Props> = ({
   required,
   placeholder = 'Select...',
   value,
+  disabled,
   ...props
 }) => {
   const { colors } = useTheme()
@@ -31,6 +33,8 @@ const DropDownButton: React.FC<Props> = ({
       borderRadius={'md'}
       borderColor={'info.500'}
       borderWidth={1}
+      bg={disabled ? 'info.400' : 'white'}
+      opacity={disabled ? 0.7 : 1}
       {...props}>
       <VStack>
         {label ? (

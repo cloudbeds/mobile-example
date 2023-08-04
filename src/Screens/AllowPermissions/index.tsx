@@ -6,6 +6,7 @@ import { notificationService } from '../../Services/NotificationService'
 import { useDimensions, useLocation, useUser } from '../../Hooks'
 import { GenericNavigationProps } from '../../Navigation/types'
 import Layout from '../../Components/Layout'
+import { ios } from '../../Theme/devices'
 
 const AllowPermissions = ({}) => {
   const navigation = useNavigation<GenericNavigationProps>()
@@ -53,7 +54,7 @@ const AllowPermissions = ({}) => {
 
   return (
     <Layout noScroll>
-      <Box h={height - headerHeight - safeArea.bottom}>
+      <Box h={height - headerHeight - safeArea.bottom - (ios ? 0 : 24)}>
         <Text color={'primary.900'} fontWeight={'400'} py={2}>
           You can make changes in your device settings any time.
         </Text>

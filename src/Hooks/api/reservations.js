@@ -40,10 +40,12 @@ export const useGetReservation = params => {
   )
 }
 
-export const useGetReservations = (key, params) => {
+export const useGetReservations = (key, params, options = {}) => {
   const { get } = apiQueryContext
-  return useQuery(['getReservations', key], () =>
-    get(`${MFD_API_HOST}/getReservations`, { params }),
+  return useQuery(
+    ['getReservations', key],
+    () => get(`${MFD_API_HOST}/getReservations`, { params }),
+    options,
   )
 }
 

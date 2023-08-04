@@ -5,6 +5,8 @@ import { TokenDataProps } from '../models/user'
 import { RootState } from '../store/store'
 import { clearUser, changeTokenData } from '../store/slices/userSlice'
 import Authentication from '../Services/Authentication'
+import { clearDevice } from '../store/slices/deviceSlice'
+import { clearReservation } from '../store/slices/reservationSlice'
 
 const AuthService = new Authentication()
 
@@ -15,6 +17,8 @@ export default function useAuth() {
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {}, [])
+
+  let isValid = AuthService.isTokenValid(tokenData!)
 
   const getAuthSession = useCallback(async () => {
     let tokens: TokenDataProps | null = tokenData
@@ -55,8 +59,11 @@ export default function useAuth() {
   const logout = useCallback(async () => {
     try {
       await AuthService.logout()
+      dispatch(clearUser())
+      dispatch(clearDevice())
+      dispatch(clearReservation())
     } catch (error) {}
-  }, [])
+  }, [dispatch])
 
-  return { getAuthSession, login, logout, loading, tokenData }
+  return { getAuthSession, login, logout, loading, tokenData, isValid }
 }

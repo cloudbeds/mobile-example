@@ -115,7 +115,7 @@ const ReservationRoomsList = ({
               </Text>
             </HStack>
           </Actionsheet.Item>
-          {rooms.map(renderRooms)}
+          {rooms?.map(renderRooms)}
         </ScrollView>
       </Actionsheet.Content>
     </Actionsheet>

@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useLayoutEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { Box, HStack, Pressable, Text, VStack } from 'native-base'
 
-import { GenericNavigationProps } from '../../Navigation/types'
+import { GenericNavigationProps, RouteProps } from '../../Navigation/types'
 import { useUser } from '../../Hooks'
 import { PropertyProps, RolesProps } from '../../models/user'
+import Routes from '../../Navigation/routesNames'
 
 import Layout from '../../Components/Layout'
 import ApartmentIcon from '../../Components/Icons/Apartment'
 
 const SelectProperty = ({}) => {
   const navigation = useNavigation<GenericNavigationProps>()
+  const route = useRoute<RouteProps>()
   const {
     properties,
     currentProperty,
@@ -20,11 +22,15 @@ const SelectProperty = ({}) => {
     changeAllowPermission,
   } = useUser()
 
+  const routeName = route?.name
+
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => null,
-    })
-  }, [navigation])
+    if (routeName === Routes.SelectProperty) {
+      navigation.setOptions({
+        headerLeft: () => null,
+      })
+    }
+  }, [navigation, routeName])
 
   useEffect(() => {
     fetchUsers(false)

@@ -20,15 +20,20 @@ import CreditCardIcon from '../../../Components/Icons/CreditCard'
 
 interface Props {
   reservation: ReservationProps & GuestProps & RoomProps
+  reservations: ReservationProps[]
   reservationNotes: ReservationNotesProps[]
 }
 
-const SearchItem = ({ reservation, reservationNotes }: Props) => {
+const SearchItem = ({ reservation, reservations, reservationNotes }: Props) => {
   const { colors } = useTheme()
 
   const openAddNote = useCallback(() => {
     navigate(Routes.AddNote, { reservation, isGuest: reservation?.isGuest })
   }, [reservation])
+
+  const openPayment = useCallback(() => {
+    navigate(Routes.TakePayment, { reservation, reservations })
+  }, [reservation, reservations])
 
   const roomName = Reservations.getRoomNames(reservation)
 
@@ -115,6 +120,7 @@ const SearchItem = ({ reservation, reservationNotes }: Props) => {
                 <IconButton
                   p="3.5"
                   icon={<CreditCardIcon color={colors.darkText} />}
+                  onPress={openPayment}
                 />
                 <StyledBadge dotColor={'error.500'} />
               </Box>

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'lodash'
 
@@ -17,13 +17,16 @@ import {
 } from '../store/slices/userSlice'
 import { getHotels, getUserInfo, getUsers } from './api'
 import { useProgress } from '../Components/ProgressHud/ProgressContext'
+import { useInterval } from '.'
+import { refreshTime } from '../models/constants'
 
-export default function useUser() {
+export default function useUser(refresh = false) {
   const dispatch = useDispatch()
   const { user, properties, currentProperty, isAllowed } = useSelector(
     (state: RootState) => state.user,
   )
   const { showProgress, hideProgress } = useProgress()
+  const [startInterval, stopInterval] = useInterval()
 
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -81,7 +84,9 @@ export default function useUser() {
           userInfo = { ...userInfo, ...filteredUser }
         }
 
-        const hotels: PropertyProps[] = (await getHotels()) || []
+        const hotels: PropertyProps[] =
+          (await getHotels({ pageNumber: 1, pageSize: 1000 })) || []
+
         changeProperties(hotels || [])
 
         const cProperty = hotels.find(
@@ -107,6 +112,26 @@ export default function useUser() {
       showProgress,
     ],
   )
+
+  const clearTimers = useCallback(() => {
+    stopInterval()
+  }, [stopInterval])
+
+  const startCycling = useCallback(() => {
+    if (refresh) {
+      startInterval(() => {
+        fetchUsers()
+      }, refreshTime)
+    }
+  }, [fetchUsers, refresh, startInterval])
+
+  useEffect(() => {
+    startCycling()
+
+    return () => {
+      clearTimers()
+    }
+  }, [clearTimers, startCycling])
 
   return {
     loading,

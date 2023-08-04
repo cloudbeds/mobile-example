@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import Authentication from './Authentication'
 import { store } from '../store/store'
+import { changeTokenData } from '../store/slices/userSlice'
 
 const AuthService = new Authentication()
 
@@ -20,6 +21,8 @@ const getAuthSession = async () => {
     if (!isValid) {
       tokenData = await AuthService.refreshToken(tokenData)
     }
+
+    store.dispatch(changeTokenData(tokenData))
 
     return tokenData
   } catch (err) {}

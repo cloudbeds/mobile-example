@@ -17,10 +17,12 @@ export const useGetGuestList = (key, params) => {
   )
 }
 
-export const useGetGuestsByFilter = (key, params) => {
+export const useGetGuestsByFilter = (key, params, options = {}) => {
   const { get } = apiQueryContext
-  return useQuery(['getGuestsByFilter', key], () =>
-    get(`${MFD_API_HOST}/getGuestsByFilter`, { params }),
+  return useQuery(
+    ['getGuestsByFilter', key],
+    () => get(`${MFD_API_HOST}/getGuestsByFilter`, { params }),
+    options,
   )
 }
 

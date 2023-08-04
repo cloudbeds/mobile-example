@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import { StyleProp, View, ViewStyle } from 'react-native'
 import { Image, useTheme } from 'native-base'
 
+import images from '../../Theme/images'
 import { SpinAnimation } from '../Animations/SpinAnimation'
 
 type SpinnerProps = {
@@ -42,7 +43,7 @@ const Spinner = ({
       ]}>
       <SpinAnimation duration={duration}>
         <Image
-          source={require('../../Assets/spinner.png')}
+          source={images.Spinner}
           style={style}
           tintColor={color || colors.white}
           size={30}

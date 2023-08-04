@@ -6,6 +6,7 @@ import {
   ReservationsParams,
 } from '../models/reservation'
 import { GuestProps } from '../models/guest'
+import { HousekeepingStatusProps } from '../models/housekeeping'
 
 export interface ConfirmModalTypes {
   title: any
@@ -23,7 +24,9 @@ export interface RouteParamsInterface {
   onClose?: any
   confirmParams?: ConfirmModalTypes
   reservation?: ReservationProps & GuestProps
+  reservations?: ReservationProps[]
   isGuest?: boolean
+  housekeepingStatus?: HousekeepingStatusProps
 }
 
 export type NavigateProps = {

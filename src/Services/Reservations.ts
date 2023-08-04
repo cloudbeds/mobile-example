@@ -3,6 +3,8 @@ import moment from 'moment-timezone'
 
 import { GuestProps, ReservationProps, RoomProps } from '../models/reservation'
 import { GuestProps as DGuestProps } from '../models/guest'
+import { HousekeepingStatusProps, OptionsProps } from '../models/housekeeping'
+import { RoomTypesProps } from '../models/room'
 
 class Reservations {
   static getReservationIdentifier(reservation: ReservationProps & GuestProps) {
@@ -48,8 +50,16 @@ class Reservations {
     return _.uniqBy(reservation, 'guestID')?.map(g => ({ ...g, isGuest: true }))
   }
 
-  static filterRooms(rooms: RoomProps[] = []) {
+  static filterRooms(rooms: RoomProps[] & HousekeepingStatusProps[] = []) {
     return _.uniqBy(rooms, 'roomID')
+  }
+
+  static filterRoomTypes(rooms: OptionsProps[] = []) {
+    return _.uniqBy(rooms, 'value')
+  }
+
+  static filterRoomTypesByID(roomTypes: RoomTypesProps[] = []) {
+    return _.uniqBy(roomTypes, 'roomTypeID')
   }
 
   static filterRoomsByType(rooms: RoomProps[] = [], roomTypeIDs: any[] = []) {
