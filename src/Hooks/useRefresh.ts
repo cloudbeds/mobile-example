@@ -51,7 +51,7 @@ export default function useRefresh(enabled: boolean) {
     {
       includeGuestsDetails: true,
       pageNumber: pageNumber?.current,
-      pageSize: 1000,
+      pageSize: 100,
     },
     {
       enabled,
@@ -65,7 +65,7 @@ export default function useRefresh(enabled: boolean) {
     refetch: refetchRoomTypes,
   } = useGetRoomTypes(
     { page: pageNumberRoomTypes?.current },
-    { pageNumber: pageNumberRoomTypes?.current, pageSize: 1000 },
+    { pageNumber: pageNumberRoomTypes?.current, pageSize: 100 },
     {
       enabled,
       keepPreviousData: true,
@@ -78,7 +78,7 @@ export default function useRefresh(enabled: boolean) {
     refetch: refetchHousekeepers,
   } = useGetHousekeepers(
     { page: pageNumberHousekeepers?.current },
-    { pageNumber: pageNumberHousekeepers?.current, pageSize: 1000 },
+    { pageNumber: pageNumberHousekeepers?.current, pageSize: 100 },
     {
       enabled,
       keepPreviousData: true,

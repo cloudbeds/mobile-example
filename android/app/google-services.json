@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "793636496362",
+    "project_id": "cloudbeds-dev",
+    "storage_bucket": "cloudbeds-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793636496362:android:9d115ddc1b9ea13dca0893",
+        "android_client_info": {
+          "package_name": "com.cloudbeds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793636496362-k9i9h0hg4qrrski85jr11hpdahog6m2e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cloudbeds",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "793636496362-rn0o3lj062qbuipollamqmbn80fu7mke.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cloudbeds",
+            "certificate_hash": "ad274fc7d66343d420d4beab30b6d22c438c1962"
+          }
+        },
+        {
+          "client_id": "793636496362-lfeedaah0o9k9n4enhsnq0vp9j7ol4hb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuvykP4mopOTPVABrg_PzoBXDzIgesV7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793636496362-lfeedaah0o9k9n4enhsnq0vp9j7ol4hb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "793636496362-a6fpreqj6rfpoghf908p7b8iofqcpbcr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cloudbeds"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

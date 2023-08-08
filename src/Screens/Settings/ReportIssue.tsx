@@ -4,6 +4,7 @@ import { Box } from 'native-base'
 
 import { useDimensions } from '../../Hooks'
 import { ios } from '../../Theme/devices'
+import { googleSurveyURL } from '../../models/constants'
 
 import Layout from '../../Components/Layout'
 
@@ -13,7 +14,7 @@ function ReportIssue() {
   return (
     <Layout noPadding>
       <Box height={height - (ios ? 0 : 82)}>
-        <WebView source={{ uri: 'https://google.com' }} />
+        <WebView source={{ uri: googleSurveyURL }} />
       </Box>
     </Layout>
   )
