@@ -1,11 +1,13 @@
 import React, { useCallback } from 'react'
+import { Linking } from 'react-native'
 import { Box, Text, Button, Spacer } from 'native-base'
 
 import { useAuth, useUser } from '../../Hooks'
 import { navigate } from '../../Navigation/navigationUtils'
 import Routes from '../../Navigation/routesNames'
-import { appBuildNumber, appVersion } from '../../Theme/devices'
+import { appBuildNumber, appVersion, ios } from '../../Theme/devices'
 import images from '../../Theme/images'
+import { googleSurveyURL } from '../../models/constants'
 
 import ListItem from '../../Components/List/ListItem'
 import ListSection from '../../Components/List/ListSection'
@@ -20,7 +22,11 @@ function Settings() {
   }, [])
 
   const openReport = useCallback(() => {
-    navigate(Routes.ReportIssue)
+    if (ios) {
+      navigate(Routes.ReportIssue)
+    } else {
+      Linking.openURL(googleSurveyURL)
+    }
   }, [])
 
   const handleLogout = () => {

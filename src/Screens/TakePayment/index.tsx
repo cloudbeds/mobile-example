@@ -148,7 +148,7 @@ function TakePayment() {
           position={'absolute'}
           bottom={0}
           p={4}
-          pb={ios ? 6 : 10}
+          pb={ios ? 6 : 60}
           safeAreaBottom
           shadow={9}>
           <HStack

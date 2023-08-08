@@ -85,7 +85,7 @@ export default function useUser(refresh = false) {
         }
 
         const hotels: PropertyProps[] =
-          (await getHotels({ pageNumber: 1, pageSize: 1000 })) || []
+          (await getHotels({ pageNumber: 1, pageSize: 100 })) || []
 
         changeProperties(hotels || [])
 
