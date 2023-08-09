@@ -290,7 +290,7 @@ function Rooms() {
   )
 
   return (
-    <Layout bg={'info.400'}>
+    <Layout bg={'info.100'}>
       <Box
         height={
           height -

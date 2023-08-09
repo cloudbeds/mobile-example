@@ -20,15 +20,15 @@ const reservationSlice = createSlice({
   reducers: {
     changeReservations(state: ReservationInterface, action) {
       const newReservations = [
-        ...(state.reservations || []),
         ...(action.payload || []),
+        ...(state.reservations || []),
       ]
 
       state.reservations = Reservations.parseReservations(newReservations || [])
     },
 
     changeRoomTypes(state: ReservationInterface, action) {
-      const newTypes = [...(state.roomTypes || []), ...(action.payload || [])]
+      const newTypes = [...(action.payload || []), ...(state.roomTypes || [])]
 
       state.roomTypes = Reservations.filterRoomTypesByID(newTypes || [])
     },

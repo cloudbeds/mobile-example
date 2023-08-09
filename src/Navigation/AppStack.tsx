@@ -138,7 +138,7 @@ const AppStack = () => {
                 options={{
                   title: 'Rooms',
                   headerShown: true,
-                  headerStyle: { backgroundColor: colors.info['400'] },
+                  headerStyle: { backgroundColor: colors.info['100'] },
                 }}
               />
               <Stack.Screen

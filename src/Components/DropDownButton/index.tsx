@@ -33,7 +33,7 @@ const DropDownButton: React.FC<Props> = ({
       borderRadius={'md'}
       borderColor={'info.500'}
       borderWidth={1}
-      bg={disabled ? 'info.400' : 'white'}
+      bg={disabled ? 'info.100' : 'white'}
       opacity={disabled ? 0.7 : 1}
       {...props}>
       <VStack>

@@ -37,7 +37,7 @@ export default function useToast() {
       type = ToastTypes.success,
       duration = 6000,
       showClose = false,
-      placement = 'bottom',
+      placement = 'top',
       p = 4,
     }: ToastProps) => {
       toastIdRef.current = toast.show({

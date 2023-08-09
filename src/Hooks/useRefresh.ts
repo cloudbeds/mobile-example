@@ -1,20 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { RootState } from '../store/store'
-import {
-  getReservation,
-  useGetHousekeepers,
-  useGetReservations,
-  useGetRoomTypes,
-  useRefreshByUser,
-} from './api'
+import { useGetHousekeepers, useGetRoomTypes, useRefreshByUser } from './api'
 import { useProgress } from '../Components/ProgressHud/ProgressContext'
-import { ReservationProps } from '../models/reservation'
-import {
-  changeReservations,
-  changeRoomTypes,
-} from '../store/slices/reservationSlice'
+import { changeRoomTypes } from '../store/slices/reservationSlice'
 import { RoomTypesProps } from '../models/room'
 import Reservations from '../Services/Reservations'
 import { useInterval } from '.'
@@ -33,31 +23,14 @@ export default function useRefresh(enabled: boolean) {
 
   const { showProgress, hideProgress } = useProgress()
   let showLoader = useRef(true)
-  const [loading, setLoading] = useState(false)
 
   const [startInterval, stopInterval] = useInterval()
-
-  let allReservations = useRef<ReservationProps[]>([])
-  let pageNumber = useRef(1)
 
   let allRoomTypes = useRef<RoomTypesProps[]>([])
   let pageNumberRoomTypes = useRef(1)
 
   let allHousekeepers = useRef<HousekeepersProps[]>([])
   let pageNumberHousekeepers = useRef(1)
-
-  const { isLoading, data, refetch } = useGetReservations(
-    { page: pageNumber?.current },
-    {
-      includeGuestsDetails: true,
-      pageNumber: pageNumber?.current,
-      pageSize: 100,
-    },
-    {
-      enabled,
-      keepPreviousData: true,
-    },
-  )
 
   const {
     isLoading: isLoadingRoomTypes,
@@ -86,22 +59,11 @@ export default function useRefresh(enabled: boolean) {
   )
 
   const refetchs = useCallback(() => {
-    refetch()
     refetchRoomTypes()
     refetchHousekeepers()
-  }, [refetch, refetchHousekeepers, refetchRoomTypes])
+  }, [refetchHousekeepers, refetchRoomTypes])
 
   const { isRefetchingByUser, refetchByUser } = useRefreshByUser(refetchs)
-
-  let reservations: ReservationProps[] = useMemo(
-    () => (isLoading ? [] : data?.data || []),
-    [data?.data, isLoading],
-  )
-
-  allReservations.current = Reservations.parseReservations([
-    ...allReservations?.current,
-    ...reservations,
-  ])
 
   let roomTypes: RoomTypesProps[] = useMemo(
     () => (isLoadingRoomTypes ? [] : dataRoomTypes?.data || []),
@@ -124,37 +86,14 @@ export default function useRefresh(enabled: boolean) {
   ])
 
   useEffect(() => {
-    if (
-      isLoading ||
-      isLoadingRoomTypes ||
-      isLoadingHousekeepers ||
-      isRefetchingByUser ||
-      loading
-    ) {
+    if (isLoadingRoomTypes || isLoadingHousekeepers || isRefetchingByUser) {
       showProgress('Loading...')
     } else {
       hideProgress()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isLoading,
-    isLoadingRoomTypes,
-    isRefetchingByUser,
-    isLoadingHousekeepers,
-    loading,
-  ])
-
-  useEffect(() => {
-    if (reservations?.length) {
-      pageNumber.current = pageNumber.current + 1
-      refetch()
-    } else {
-      getReservationInfo()
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reservations])
+  }, [isLoadingRoomTypes, isRefetchingByUser, isLoadingHousekeepers])
 
   useEffect(() => {
     if (roomTypes?.length) {
@@ -182,24 +121,6 @@ export default function useRefresh(enabled: boolean) {
     dispatch(changeRoomTypes(allRoomTypes.current || []))
   }, [dispatch])
 
-  const getReservationInfo = useCallback(async () => {
-    if (showLoader.current) {
-      setLoading(true)
-    }
-
-    const deReservations: ReservationProps[] = await Promise.all(
-      allReservations.current.map(async guest => {
-        return await getReservation({ reservationID: guest.reservationID })
-      }),
-    )
-
-    if (!isLoading && !isLoadingRoomTypes && !isRefetchingByUser) {
-      setLoading(false)
-    }
-
-    dispatch(changeReservations(deReservations))
-  }, [dispatch, isLoading, isLoadingRoomTypes, isRefetchingByUser])
-
   const storeHousekeepers = useCallback(() => {
     dispatch(changeHousekeepers(allHousekeepers.current || []))
   }, [dispatch])
@@ -207,7 +128,6 @@ export default function useRefresh(enabled: boolean) {
   const refetchAllReservations = useCallback(() => {
     showLoader.current = false
 
-    pageNumber.current = 1
     pageNumberRoomTypes.current = 1
     pageNumberHousekeepers.current = 1
 

@@ -5,8 +5,6 @@ import { TokenDataProps } from '../models/user'
 import { RootState } from '../store/store'
 import { clearUser, changeTokenData } from '../store/slices/userSlice'
 import Authentication from '../Services/Authentication'
-import { clearDevice } from '../store/slices/deviceSlice'
-import { clearReservation } from '../store/slices/reservationSlice'
 
 const AuthService = new Authentication()
 
@@ -49,7 +47,7 @@ export default function useAuth() {
     setLoading(true)
     try {
       let tokens = await AuthService.login()
-      setLoading(false)
+      // setLoading(false)
       dispatch(changeTokenData(tokens))
     } catch (error) {
       setLoading(false)
@@ -60,8 +58,6 @@ export default function useAuth() {
     try {
       await AuthService.logout()
       dispatch(clearUser())
-      dispatch(clearDevice())
-      dispatch(clearReservation())
     } catch (error) {}
   }, [dispatch])
 

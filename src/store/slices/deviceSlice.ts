@@ -9,12 +9,14 @@ import {
 import Reservations from '../../Services/Reservations'
 
 export interface DeviceInterface {
+  isAllowed: boolean
   housekeepingFilters: { [key in FilterTypes]: any[] }
   roomTypes: OptionsProps[]
   housekeepers: HousekeepersProps[]
 }
 
 const initialState: DeviceInterface = {
+  isAllowed: false,
   housekeepingFilters: {
     [FilterTypes.Type]: ['all'],
     [FilterTypes.Status]: ['all'],
@@ -30,6 +32,10 @@ const deviceSlice = createSlice({
   name: 'device',
   initialState,
   reducers: {
+    changeAllowed(state: DeviceInterface, action) {
+      state.isAllowed = action.payload
+    },
+
     changeHousekeepingFilters(state: DeviceInterface, action) {
       state.housekeepingFilters = {
         ...state.housekeepingFilters,
@@ -38,15 +44,15 @@ const deviceSlice = createSlice({
     },
 
     changeRoomTypes(state: DeviceInterface, action) {
-      const newTypes = [...(state.roomTypes || []), ...(action.payload || [])]
+      const newTypes = [...(action.payload || []), ...(state.roomTypes || [])]
 
       state.roomTypes = Reservations.filterRoomTypes(newTypes || [])
     },
 
     changeHousekeepers(state: DeviceInterface, action) {
       const newTypes = [
-        ...(state.housekeepers || []),
         ...(action.payload || []),
+        ...(state.housekeepers || []),
       ]
 
       state.housekeepers = filterHousekeepersByID(newTypes || [])
@@ -59,6 +65,7 @@ const deviceSlice = createSlice({
 })
 
 export const {
+  changeAllowed,
   changeHousekeepingFilters,
   changeRoomTypes,
   changeHousekeepers,
