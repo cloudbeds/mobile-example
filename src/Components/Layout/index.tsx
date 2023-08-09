@@ -2,6 +2,8 @@ import React, { ReactNode, useCallback } from 'react'
 import { SafeAreaView, StatusBar, useColorScheme } from 'react-native'
 import { Box, ScrollView, useTheme } from 'native-base'
 
+import { ios } from '../../Theme/devices'
+
 export interface LayoutProps {
   children: ReactNode
   noScroll?: boolean
@@ -32,7 +34,9 @@ const Layout = ({
     <Box flex="1" bg={bg}>
       <SafeAreaView>
         <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          barStyle={
+            ios ? 'dark-content' : isDarkMode ? 'light-content' : 'dark-content'
+          }
           backgroundColor={backgroundStyle.backgroundColor}
         />
 
