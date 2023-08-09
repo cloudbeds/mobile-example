@@ -9,7 +9,7 @@ import {
   useTheme,
   Text,
 } from 'native-base'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment-timezone'
 import { useIsFocused } from '@react-navigation/native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
@@ -18,6 +18,7 @@ import { Icon } from '@fortawesome/fontawesome-svg-core'
 
 import {
   getGuestNotes,
+  getReservation,
   getReservationNotes,
   useGetGuestsByFilter,
   useRefreshByUser,
@@ -38,6 +39,7 @@ import { ios } from '../../Theme/devices'
 import images from '../../Theme/images'
 import Reservations from '../../Services/Reservations'
 import { RootState } from '../../store/store'
+import { changeReservations } from '../../store/slices/reservationSlice'
 
 import Hero from '../../Components/Hero/Hero'
 import Spinner from '../../Components/Spinner'
@@ -45,6 +47,7 @@ import SearchItem from './components/SearchItem'
 import ListSection from '../../Components/List/ListSection'
 
 function Search() {
+  const dispatch = useDispatch()
   const { reservations: storedReservations } = useSelector(
     (state: RootState) => state.reservation,
   )
@@ -103,13 +106,33 @@ function Search() {
 
   useEffect(() => {
     if (isFocused) {
-      getReservationInfo()
+      saveReservations()
       getReservationNotesInfo()
       getGuestNotesInfo()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredGuests, isFocused])
+
+  useEffect(() => {
+    getReservationInfo()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedReservations])
+
+  const saveReservations = useCallback(async () => {
+    setLoading(true)
+
+    const deReservations: ReservationProps[] = await Promise.all(
+      filteredGuests.map(async guest => {
+        return await getReservation({ reservationID: guest.reservationID })
+      }),
+    )
+
+    setLoading(false)
+
+    dispatch(changeReservations(deReservations))
+  }, [dispatch, filteredGuests])
 
   const getReservationInfo = useCallback(async () => {
     if (!reservations?.length) {

@@ -13,8 +13,8 @@ import {
   changeUserInfo as storeUserInfo,
   changeProperties as storeProperties,
   changeCurrentProperty as storeCurrentProperty,
-  changeAllowed,
 } from '../store/slices/userSlice'
+import { changeAllowed } from '../store/slices/deviceSlice'
 import { getHotels, getUserInfo, getUsers } from './api'
 import { useProgress } from '../Components/ProgressHud/ProgressContext'
 import { useInterval } from '.'
@@ -22,9 +22,10 @@ import { refreshTime } from '../models/constants'
 
 export default function useUser(refresh = false) {
   const dispatch = useDispatch()
-  const { user, properties, currentProperty, isAllowed } = useSelector(
+  const { user, properties, currentProperty } = useSelector(
     (state: RootState) => state.user,
   )
+  const { isAllowed } = useSelector((state: RootState) => state.device)
   const { showProgress, hideProgress } = useProgress()
   const [startInterval, stopInterval] = useInterval()
 

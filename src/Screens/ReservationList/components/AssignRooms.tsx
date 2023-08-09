@@ -121,6 +121,7 @@ const AssignRooms = ({
                   description={'This reservation contains unassigned rooms'}
                   p={0}
                   mb={4}
+                  w={'100%'}
                 />
               ) : null}
 

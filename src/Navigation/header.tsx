@@ -52,7 +52,7 @@ export const renderHeader = ({
   color,
 }: any): StackNavigationOptions => ({
   animationTypeForReplace: 'pop',
-  gestureEnabled: false,
+  gestureEnabled: true,
   animationEnabled: true,
   headerShown: false,
   headerStyle: {

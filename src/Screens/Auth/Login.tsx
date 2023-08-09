@@ -1,16 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Text, Button } from 'native-base'
+import { useIsFocused } from '@react-navigation/native'
 
 import { useAuth } from '../../Hooks'
 
 import LogoIcon from '../../Components/Icons/Logo'
 import Layout from '../../Components/Layout'
+import { useProgress } from '../../Components/ProgressHud/ProgressContext'
 
 const Login = () => {
-  const { login } = useAuth()
+  const isFocused = useIsFocused()
+  const { login, loading } = useAuth()
+  const { showProgress, hideProgress } = useProgress()
+
+  useEffect(() => {
+    if (!loading && isFocused) {
+      hideProgress()
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, isFocused])
 
   const authenticate = async () => {
-    return await login()
+    showProgress('Loading...')
+    try {
+      await login()
+    } catch (error) {
+      hideProgress()
+    }
   }
 
   return (

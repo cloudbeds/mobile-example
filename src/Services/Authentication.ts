@@ -7,7 +7,7 @@ import {
   IDENTITY_CLIENT_ID,
   IDENTITY_CLIENT_SECRET,
   IDENTITY_REDIRECT_URL,
-  IDENTITY_SCOPES,
+  // IDENTITY_SCOPES,
   // @ts-ignore
 } from '@env'
 import { TokenDataProps } from '../models/user'
@@ -25,7 +25,7 @@ const AuthConfig = {
   clientId: IDENTITY_CLIENT_ID,
   clientSecret: IDENTITY_CLIENT_SECRET,
   redirectUrl: IDENTITY_REDIRECT_URL,
-  scopes: IDENTITY_SCOPES.split(','),
+  // scopes: IDENTITY_SCOPES.split(','),
   serviceConfiguration: {
     authorizationEndpoint: IDENTITY_AUTHORIZATION_URL,
     tokenEndpoint: IDENTITY_TOKEN_ENDPOINT,
@@ -48,6 +48,7 @@ class Authentication {
   async refreshToken(tokenData: TokenDataProps) {
     return new Promise(async (resolve, reject) => {
       try {
+        // @ts-ignore
         const result = await refresh(AuthConfig, {
           refreshToken: tokenData?.refreshToken,
         })
@@ -63,6 +64,7 @@ class Authentication {
   async login() {
     return new Promise(async (resolve, reject) => {
       try {
+        // @ts-ignore
         const result = await authorize(AuthConfig)
         console.log(result)
         resolve(result)

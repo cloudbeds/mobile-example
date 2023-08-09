@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { InteractionManager } from 'react-native'
 import { Button, useDisclose } from 'native-base'
 import _ from 'lodash'
 
@@ -77,7 +78,9 @@ const ReservationStatus = ({ reservation, onUpdate, type }: Props) => {
 
   useEffect(() => {
     if (type === DashboardTypes.arrivals) {
-      refetch()
+      InteractionManager.runAfterInteractions(() => {
+        refetch()
+      })
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,7 +105,7 @@ const ReservationStatus = ({ reservation, onUpdate, type }: Props) => {
   )
   let rooms: RoomProps[] = [...allRooms, ...assignedRooms]
 
-  rooms = Reservations.filterRooms(rooms)
+  rooms = Reservations.filterRooms(rooms as any[])
 
   let label = ''
   let buttonBg = 'primary.500'

@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { InteractionManager } from 'react-native'
 import { FlatList, useTheme, VStack } from 'native-base'
 import { useRoute } from '@react-navigation/native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import {
+  getReservation,
   getReservationNotes,
   useGetReservations,
   useRefreshByUser,
@@ -19,6 +21,7 @@ import {
 } from '../../models/reservation'
 import Reservations from '../../Services/Reservations'
 import { RootState } from '../../store/store'
+import { changeReservations } from '../../store/slices/reservationSlice'
 
 import ReservationRow from './components/ReservationRow'
 import EmptyView from '../../Components/List/EmptyView'
@@ -26,6 +29,7 @@ import ReservationRowSkeleton from './components/ReservationRowSkeleton'
 import Layout from '../../Components/Layout'
 
 function ReservationList() {
+  const dispatch = useDispatch()
   const { reservations: storedReservations } = useSelector(
     (state: RootState) => state.reservation,
   )
@@ -69,8 +73,10 @@ function ReservationList() {
   }, [refetchByUser])
 
   const refetchs = useCallback(() => {
-    pageNumber.current = 1
-    refetch()
+    InteractionManager.runAfterInteractions(() => {
+      pageNumber.current = 1
+      refetch()
+    })
   }, [refetch])
 
   const endReached = useCallback(() => {
@@ -83,11 +89,31 @@ function ReservationList() {
   useRefreshOnFocus(refetchs)
 
   useEffect(() => {
-    getReservationInfo()
+    saveReservations()
     getReservationNotesInfo()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservations])
+
+  useEffect(() => {
+    getReservationInfo()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedReservations])
+
+  const saveReservations = useCallback(async () => {
+    setLoading(true)
+
+    const deReservations: ReservationProps[] = await Promise.all(
+      reservations.map(async guest => {
+        return await getReservation({ reservationID: guest.reservationID })
+      }),
+    )
+
+    setLoading(false)
+
+    dispatch(changeReservations(deReservations))
+  }, [dispatch, reservations])
 
   const getReservationInfo = useCallback(async () => {
     setLoading(true)
@@ -103,8 +129,8 @@ function ReservationList() {
     setLoading(false)
     setReservations(
       Reservations.parseReservations([
-        ...detailedReservations,
         ...deReservations,
+        ...detailedReservations,
       ]),
     )
   }, [detailedReservations, reservations, storedReservations])

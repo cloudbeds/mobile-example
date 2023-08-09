@@ -8,7 +8,6 @@ export interface UserInterface {
   user: UserInfoProps | null
   properties: PropertyProps[]
   currentProperty: PropertyProps | null
-  isAllowed: boolean
   currentLocation: GeolocationResponse | null
 }
 
@@ -17,7 +16,6 @@ const initialState: UserInterface = {
   user: null,
   properties: [],
   currentProperty: null,
-  isAllowed: false,
   currentLocation: null,
 }
 
@@ -37,9 +35,6 @@ const userSlice = createSlice({
     changeCurrentProperty(state: UserInterface, action) {
       state.currentProperty = action.payload
     },
-    changeAllowed(state: UserInterface, action) {
-      state.isAllowed = action.payload
-    },
     changeCurrentLocation(state: UserInterface, action) {
       state.currentLocation = action.payload
     },
@@ -54,7 +49,6 @@ export const {
   changeUserInfo,
   changeProperties,
   changeCurrentProperty,
-  changeAllowed,
   clearUser,
   changeCurrentLocation,
 } = userSlice.actions
