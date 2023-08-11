@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { InteractionManager } from 'react-native'
 import { Box, FlatList, Text, VStack } from 'native-base'
 import { useSelector } from 'react-redux'
 
@@ -79,8 +80,10 @@ function Houskeeping() {
   }, [allHousekeepings])
 
   const refetchs = useCallback(() => {
-    pageNumber.current = 1
-    refetch()
+    InteractionManager.runAfterInteractions(() => {
+      pageNumber.current = 1
+      refetch()
+    })
   }, [refetch])
 
   useRefreshOnFocus(refetchs)

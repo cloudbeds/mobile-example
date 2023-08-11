@@ -46,24 +46,27 @@ const BottomTabNavigation = ({ state, descriptors, navigation, insets }) => {
         })
 
         return (
-          <Box key={route.key} flex={1} alignItems={'center'}>
-            <Box
-              p="2"
-              rounded="lg"
-              borderColor={isFocused ? 'primary.500' : 'white'}
-              bg={isFocused ? 'primary.50' : null}
-              borderWidth="1">
-              <TouchableOpacity
-                accessibilityRole="button"
-                accessibilityState={isFocused ? { selected: true } : {}}
-                accessibilityLabel={options.tabBarAccessibilityLabel}
-                testID={options.tabBarTestID}
-                onPress={onPress}
-                onLongPress={onLongPress}>
+          <TouchableOpacity
+            key={route.key}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            // eslint-disable-next-line react-native/no-inline-styles
+            style={{ flex: 1 }}
+            onPress={onPress}
+            onLongPress={onLongPress}>
+            <Box alignItems={'center'}>
+              <Box
+                p="2"
+                rounded="lg"
+                borderColor={isFocused ? 'primary.500' : 'white'}
+                bg={isFocused ? 'primary.50' : null}
+                borderWidth="1">
                 <Square size="8">{icon}</Square>
-              </TouchableOpacity>
+              </Box>
             </Box>
-          </Box>
+          </TouchableOpacity>
         )
       })}
     </Box>

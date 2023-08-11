@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { RefreshControl } from 'react-native'
+import { InteractionManager, RefreshControl } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Box, Text, VStack, ScrollView, HStack } from 'native-base'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
@@ -37,7 +37,13 @@ function Dashboard() {
   const response = data ? data.data : {}
   const { arrivals, departures, inHouse, percentageOccupied } = response
 
-  useRefreshOnFocus(refetch)
+  const refetchs = useCallback(() => {
+    InteractionManager.runAfterInteractions(() => {
+      refetch()
+    })
+  }, [refetch])
+
+  useRefreshOnFocus(refetchs)
 
   const refetchAll = useCallback(() => {
     refetchAllReservations()

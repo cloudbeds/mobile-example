@@ -105,13 +105,9 @@ export default function useUser(refresh = false) {
         hideProgress()
       }
     },
-    [
-      changeCurrentProperty,
-      changeProperties,
-      changeUserInfo,
-      hideProgress,
-      showProgress,
-    ],
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [changeCurrentProperty, changeProperties, changeUserInfo],
   )
 
   const clearTimers = useCallback(() => {

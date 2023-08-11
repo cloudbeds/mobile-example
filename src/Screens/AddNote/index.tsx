@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { memo, useCallback, useMemo, useState } from 'react'
 import { Keyboard } from 'react-native'
 import {
   Actionsheet,
@@ -136,7 +136,9 @@ function AddNote() {
       placement: 'top',
       showClose: true,
     })
-  }, [hideProgress, showToast])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showToast])
 
   const successProcess = useCallback(
     (data: any, message: string) => {
@@ -155,7 +157,9 @@ function AddNote() {
         noteSussess(message)
       }
     },
-    [hideProgress, noteSussess, showToast],
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [noteSussess, showToast],
   )
 
   const updateNote = useCallback(() => {
@@ -236,14 +240,9 @@ function AddNote() {
     } else {
       sendReservationNote()
     }
-  }, [
-    isGuest,
-    selectedNote,
-    sendGuestNote,
-    sendReservationNote,
-    showProgress,
-    updateNote,
-  ])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGuest, selectedNote, sendGuestNote, sendReservationNote, updateNote])
 
   const reservationNoteDelete = useCallback(() => {
     deleteReservationNote(
@@ -302,13 +301,9 @@ function AddNote() {
     } else {
       reservationNoteDelete()
     }
-  }, [
-    guestNoteDelete,
-    isGuest,
-    onCloseDot,
-    reservationNoteDelete,
-    showProgress,
-  ])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guestNoteDelete, isGuest, onCloseDot, reservationNoteDelete])
 
   const openDot = useCallback(
     (item: ReservationNotesProps) => {
@@ -466,4 +461,4 @@ function AddNote() {
   )
 }
 
-export default AddNote
+export default memo(AddNote)

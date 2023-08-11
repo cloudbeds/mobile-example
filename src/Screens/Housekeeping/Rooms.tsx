@@ -175,7 +175,9 @@ function Rooms() {
         noteSussess('')
       }
     },
-    [closeFilter, hideProgress, housekeepingFilters, noteSussess, showToast],
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [closeFilter, housekeepingFilters, noteSussess, showToast],
   )
 
   const errorProcess = useCallback(() => {
@@ -187,7 +189,9 @@ function Rooms() {
       placement: 'top',
       showClose: true,
     })
-  }, [hideProgress, showToast])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showToast])
 
   const setHousekeepingStatus = useCallback(
     (params: any) => {
@@ -202,7 +206,9 @@ function Rooms() {
         },
       })
     },
-    [errorProcess, postHousekeepingStatus, showProgress, successProcess],
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [errorProcess, postHousekeepingStatus, successProcess],
   )
 
   const changeDisturb = useCallback(
@@ -253,13 +259,14 @@ function Rooms() {
         )
       }
     },
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       errorProcess,
       housekeepingStatus?.roomID,
       postHousekeepingAssignment,
       sFilters,
       setHousekeepingStatus,
-      showProgress,
       showToast,
       successProcess,
     ],
