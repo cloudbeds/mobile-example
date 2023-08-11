@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { InteractionManager } from 'react-native'
 import {
   Box,
   CloseIcon,
@@ -102,7 +103,13 @@ function Search() {
     [filteredGuests, loading],
   )
 
-  useRefreshOnFocus(refetch)
+  const refetchs = useCallback(() => {
+    InteractionManager.runAfterInteractions(() => {
+      refetch()
+    })
+  }, [refetch])
+
+  useRefreshOnFocus(refetchs)
 
   useEffect(() => {
     if (isFocused) {
